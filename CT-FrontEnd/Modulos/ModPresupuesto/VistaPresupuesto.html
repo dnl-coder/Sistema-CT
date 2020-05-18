@@ -1,0 +1,138 @@
+<style type="text/css">
+
+    .b{border-radius: 5px;}
+    .h:hover{color: white; 
+      background: #2D529B;}
+    
+</style>
+
+<div class="w-responsive mx-auto my-5">
+  <div class="text-center">
+    <!-- BOTON CREAR PRESUPUESTO -->
+     <div><button class="btn h b btn-lg boton " onclick="NuevoPresupuesto()">CREAR PRESUPUESTO</button></div>
+     <!-- BOTON AGREGAR ITEMS A PRESUPUESTO EXISTENTE -->
+     <div><button class="btn h btn-lg b boton" data-toggle="modal" data-target="#listadopresupuesto">AGREGAR ITEMS A PRESUPUESTO EXISTENTE</button></div>  
+  </div>
+
+</div>
+
+
+<!-- MODAL PRESUPUESTO -->
+
+<div class="modal fade" id="listadopresupuesto" tabindex="-1" role="dialog" aria-labelledby="listadoPresupuestoTitulo"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+
+      <div class="modal-header principal">
+        <h5 class="modal-title white-text font-weight-bold">Buscar Presupuesto</h5>
+        <button id="closeModal" type="button" class="close white-text font-weight-bold" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body ">
+      
+      <!-- MODAL LISTAR PRESUPUESTO X CODIGO -->
+       <div class=" b py-1 mt-2" >
+         <h6 class="formulario b text-center">Buscar por Código de Presupuesto</h6>
+        <input type="text" name="codpresupuesto" id="codpresupuesto" class="w-responsive">
+        <button id="Busquedaxcodigo" data-dismiss="modal">Buscar</button>
+       </div>
+             
+      <!-- MODAL LISTAR PRESUPUESTO X CLIENTE -->
+       <div class=" b py-1 mt-4">
+       <h6 class="formulario b text-center">Buscar por Presupuestos del Cliente</h6>
+        <select name="clientes" id="clientes" class="w-responsive" ></select>
+        <button id="BusquedaxCliente" data-dismiss="modal">Buscar</button>
+       </div>
+      </div>
+
+    </div>
+    
+</div>
+</div>
+
+
+
+<!--ARCHIVOS JS DE LA VISTA-->
+<script type="text/javascript" src="Modulos/ModPresupuesto/VistaPresupuesto.js"></script>
+
+<script>
+  
+  
+mostrarClientes(); 
+  
+//--MOSTRAR CLIENTES EN EL MODAL--//
+function mostrarClientes(){
+    var boxClientes="";
+    
+    $.ajax({
+        url: "../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_MostrarTodosClientes.php",
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+            boxClientes+="<option value='' selected>Elegir Cliente</option>";
+            $("#clientes").html(boxClientes);
+        },
+        success: function(datos){
+
+            if(datos.response=="0"){
+                boxClientes+="<option value='' selected>Elegir Cliente</option>";
+                $("#clientes").html(boxClientes);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxClientes+="<option value='' selected>Elegir Cliente</option>";
+                    }
+                    boxClientes+="<option value='"+datos[i].CLIENCODIGO+"'>"+datos[i].CLIENRAZON_SOCIAL+"</option>";
+                }
+                $("#clientes").html(boxClientes);
+            }
+        }
+    });  
+    
+}
+ 
+var buscar="NO";
+var presupuesto;
+  
+//--BUSCAR X CODIGO PRESUPUESTO -//
+ $("#Busquedaxcodigo").click(function(){
+   buscar="VERDAD";
+   presupuesto=$("#codpresupuesto").val();
+}); 
+    
+$("#listadopresupuesto").on('hidden.bs.modal', function(){
+    if (buscar=="VERDAD" && $("#codpresupuesto").val() != ""){
+        BuscarPresupuestos(presupuesto,buscar);
+    }else if(buscar=="VERDAD"){
+      alert("Ingresar Codigo del Presupuesto");
+      buscar="NO";
+    }
+}); 
+  
+//--BUSCAR PRESUPUESTO X CODIGO DE CLIENTE--//
+$("#BusquedaxCliente").click(function(){
+   buscar="SI";
+   cliente=$("#clientes ").val();
+   name=$("#clientes option:selected").text();
+}); 
+    
+$("#listadopresupuesto").on('hidden.bs.modal', function(){
+    if (buscar=="SI" && $("#clientes option:selected").text() != "Elegir Cliente"){
+        ListarPresupuestos(cliente,name)
+    }else if(buscar=="SI"){
+      alert("Seleccionar Cliente");
+      buscar="NO";
+    }
+});
+
+</script>

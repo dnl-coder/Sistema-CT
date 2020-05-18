@@ -1,0 +1,326 @@
+<style>
+    td{min-width: 100px;}
+</style>
+
+<form method="post">
+<div class="table-responsive">
+
+ <table class="table my-3">
+  <thead class="black white-text">
+    <tr>
+      <th colspan="2">REGISTRO DE NUEVO CLIENTE C/ CREDITO</th>
+      <th id="nombreCorto" colspan="2"></th>
+      <th colspan="1">Codigo : <span id="codigo">1515151515</span></th>
+      <th id="fechaRegistro" class="text-right"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="formulario">Razon Social :</td>
+      <td><input type="text" class="w-responsive" id="razonSocial" disabled required></td>
+      <td class="formulario">Identificación :</td>
+      <td>
+         <select name="tipiden" id="tipiden" class="w-responsive"  disabled>
+          <option value="RUC">RUC</option>
+          <option value="LE/DNI">LE/DNI</option>
+          <option value="PAS">PAS</option>
+         </select>
+          N° :<input type="number" required id="numIdentificacion" maxlength="11" disabled>
+      </td>
+      <td class="formulario">Emp. Asignada :</td>
+      <td><select name="empresa" id="empresa" class="w-responsive"  disabled></select></td>
+    </tr>
+    <tr>
+      <td class="formulario">Tipo :</td>
+      <td>
+          <select name="tipo" id="tipo" class="w-responsive" disabled>
+              <option value="EVENTUAL">EVENTUAL</option>
+              <option value="PERMANENTE">PERMANENTE</option>
+          </select>
+      </td>
+      <td class="formulario">Estado :</td>
+      <td><select name="estado" id="estado" class="w-responsive" disabled></select></td>
+      <td class="formulario">Vendedor asignado :</td>
+      <td>
+          <select name="vendedor" id="vendedor" class="w-responsive"  disabled>
+              <option value="35">Fabiola Morales</option>
+              <option value="39">Yrma Paucar</option>
+              <option value="54">Milagros Salinas</option>
+              <option value="28">Liz Guerrero</option>
+          </select>
+      </td>
+    </tr>
+    <tr><td colspan="6" class="black py-0 white-text">Datos del Crédito</td></tr>
+    <tr>
+      <td class="formulario">Crédito :</td>
+      <td><input type="number" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" class="w-responsive" id="credito"></td>
+      <td class="formulario">Moneda :</td>
+      <td>
+          <select name="moneda" id="moneda" class="w-responsive" >
+              <option value="SOLES">SOLES</option>
+              <option value="DOLARES">DOLARES</option>
+              <option value="EUROS">EUROS</option>
+          </select>
+      </td>
+      <td class="formulario">Deuda :</td>
+      <td><input type="text" class="w-responsive" disabled id="deuda"></td>
+    </tr>
+    <tr>
+      <td class="formulario">Plazo :</td>
+      <td><input type="number" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="4" id="plazo" class="w-responsive"></td>
+      <td class="formulario">Comprobante :</td>
+      <td>
+          <select name="comprob" id="comprob" class="w-responsive" >
+              <option value="">NINGUNO</option>
+              <option value="FACTURA">FACTURA</option>
+              <option value="ORDEN DE SERVICIO">ORDEN DE SERVICIO</option>
+          </select>
+      </td>
+      <td class="formulario">Forma de Pago :</td>
+      <td>
+          <select name="fpago" id="fpago" class="w-responsive" >
+              <option value="">NINGUNO</option>
+              <option value="C/CANJE">C/CANJE</option>
+              <option value="CH/DIF">CH/DIF</option>
+              <option value="LETRA">LETRA</option>
+          </select>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ <hr>
+ <div class="text-center">
+    <button type="button" onclick="validar()" class="btn boton">Guardar</button> 
+ </div>
+ <div id="resultado" class="text-center h3-responsive principal-text my-3 font-weight-bold"></div>
+
+</div>
+
+<!-- MENSAJE -->
+<div class="toast" data-autohide="true" data-delay="9000"><div class="toast-body"></div></div>
+
+</form>
+
+
+<script type="text/javascript">   
+    
+cargarDatos(cliente); 
+    
+/*=============================================
+    CARGAR DATOS DEL CLIENTE
+=============================================*/
+
+function cargarDatos(cliente){
+    
+    var $nombre={
+        '_nombre' : cliente
+    }
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_MostrarDatosClientes.php',
+        type: 'POST',
+        data: $nombre,
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                mostrarMensaje("error","ERROR AL CARGAR LOS DATOS! Archivos no encontrados");
+            }
+            else{
+                mostrarMensaje("error","ERROR AL CARGAR LOS DATOS! Error no identificado");
+            }
+        },
+        success: function(datos){
+ 
+            if(datos.response=="0"){
+                mostrarMensaje("error",'ERROR: '+datos.message);
+            }else{
+                $("#codigo").text(datos.CLIENCODIGO);
+                $("#nombreCorto").text(datos.CLIENNOMBRE_CORTO);
+                $("#fechaRegistro").text(datos.CLIENFECHA_REGISTRO);
+                $("#razonSocial").val(datos.CLIENRAZON_SOCIAL);
+                $("#tipiden option[value="+ datos.CLIENTIPIDEN +"]").attr("selected",true);
+                $("#numIdentificacion").val(datos.CLIENNUM_IDENTIFICACION);
+                mostrarEmpresa(datos.EMPCODIGO);
+                $("#tipo option[value="+ datos.CLIENTIPO +"]").attr("selected",true);
+                mostrarEstado(datos.ESTCODIGO);
+                $("#vendedor option[value="+ datos.CLIENVENDEDOR +"]").attr("selected",true);
+                $("#deuda").val(datos.CLIENDEUDA);
+                
+                $("#credito").val(datos.CLIENCREDITO);
+                $("#moneda").val(datos.CLIENMONEDA);
+                $("#plazo").val(datos.CLIENPLAZO_PAGO);
+                
+                if(datos.CLIENTIPCOMPROB == undefined){
+                    $("#comprob option[value="+ datos.CLIENTIPCOMPROB+"]").attr("selected",true);
+                }
+                if(datos.CLIENFORM_PAGO == undefined){
+                    $("#fpago option[value="+ datos.CLIENFORM_PAGO+"]").attr("selected",true);
+                }
+                
+            }
+        }
+    });  
+}       
+    
+/*=============================================
+    CARGAR EMPRESA
+=============================================*/
+
+//--GENERAR OPCIONES DE EMPRESA--
+function mostrarEmpresa(OP){
+    var boxEmpresa="";
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_MostrarEmpresa.php',
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+            boxEmpresa+="<option value='' selected>Elegir Empresa</option>";
+            $("#empresa").html(boxEmpresa);
+        },
+        success: function(datos){
+
+            if(datos.response=="0"){
+                boxEmpresa+="<option value='' selected>Elegir Empresa</option>";
+                $("#empresa").html(boxEmpresa);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxEmpresa+="<option value='' selected>Elegir Empresa</option>";
+                    }
+                    boxEmpresa+="<option value='"+datos[i].EMPCODIGO+"'>"+datos[i].EMPDESCRIPCION+"</option>";
+                }
+                $("#empresa").html(boxEmpresa);
+                $("#empresa option[value="+ OP +"]").attr("selected",true);
+            }
+        }
+    });  
+}
+
+/*=============================================
+    CARGAR ESTADO
+=============================================*/
+
+//--GENERAR OPCIONES DE ESTADO--
+function mostrarEstado(OP){
+    var boxEstado="";
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_MostrarEstado.php',
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+            boxEstado+="<option value='' selected>Elegir Estado</option>";
+            $("#estado").html(boxEstado);
+        },
+        success: function(datos){
+
+            if(datos.response=="0"){
+                boxEstado+="<option value='' selected>Elegir Estado</option>";
+                $("#estado").html(boxEstado);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxEstado+="<option value='' selected>Elegir Estado</option>";
+                    }
+                    boxEstado+="<option value='"+datos[i].ESTCODIGO+"'>"+datos[i].ESTDESCRIPCION+"</option>";
+                }
+                $("#estado").html(boxEstado);
+                $("#estado option[value="+ OP +"]").attr("selected",true);
+            }
+        }
+    });  
+} 
+    
+/*=============================================
+    VALIDAR FORMULARIO
+=============================================*/
+    
+function validar(){
+    
+    var R1 = $("#credito").val();
+    var R3 = $("#moneda").val();
+    var R5 = $("#plazo").val();
+    var R6 = $("#comprob").val();
+    var R7 = $("#fpago").val();
+    
+    if(R1 == null || R1.length == 0 || /^\s+$/.test(R1)){
+        alert('ERROR: El campo no debe ir vacío o lleno solamente espacios en blanco');
+        $("#credito").focus();
+    }
+    else if(R3 == null || R3.length == 0 || /^\s+$/.test(R3)){
+        alert('ERROR: El campo no debe ir vacío o lleno solamente espacios en blanco');
+        $("#moneda").focus();
+    }
+    else if(R5 == null || R5.length == 0 || /^\s+$/.test(R5)){
+        alert('ERROR: El campo no debe ir vacío o lleno solamente espacios en blanco');
+        $("#plazo").focus();
+    }
+    else if(R6 == null || R6.length == 0 || /^\s+$/.test(R6)){
+        alert('ERROR: El campo no debe ir vacío o lleno solamente espacios en blanco');
+        $("#comprob").focus();
+    }
+    else if(R7 == null || R7.length == 0 || /^\s+$/.test(R7)){
+        alert('ERROR: El campo no debe ir vacío o lleno solamente espacios en blanco');
+        $("#fpago").focus();
+    }
+    
+    else{
+        console.log("Validación de datos correcta...");
+        RegistrarClientesCredito();
+    }
+        
+}    
+    
+/*=============================================
+   ENVIAR FORMULARIO
+=============================================*/
+
+function RegistrarClientesCredito(){
+    var $cliente={
+        '_codigo' : $("#codigo").text(),
+        '_credito' : $("#credito").val(),
+        '_moneda' : $("#moneda").val(),
+        '_plazo' : $("#plazo").val(),
+        '_comprob' : $("#comprob").val(),
+        '_fpago' : $("#fpago").val()
+    }
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_RegistrarClientesCredito.php',
+        type: 'POST',
+        data: $cliente,
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("No se pudo establecer conexion con el servidor");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+        },
+        success: function(datos){
+
+            if(datos.response == 0){
+                console.log('ERROR: '+datos.message);
+            }
+            else{
+                $("#resultado").text("Resultados grabados satisfactoriamente");
+            }
+        }
+    });
+}   
+     
+</script>

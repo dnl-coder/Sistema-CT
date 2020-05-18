@@ -1,0 +1,1311 @@
+<style>    
+  td{
+      min-width: 100px;
+      padding: 0;
+      margin: 0;
+  }
+  th{text-align: left;}
+  
+  #tablaSuperior td input{text-align: center;}
+  
+  #otros td div, .table select,.table input[type="text"], #tablaAgregar input[type="text"]{width: 100%;}
+   #tablaAgregar input[type="text"]{text-align: center}
+  
+  .table td{vertical-align: middle;}
+  .table input[type="checkbox"]{
+    width: 35px;
+    height: 35px;
+    margin-left: 8px;
+    margin-top: 0px;
+  }
+  
+  #otros tr{margin: 0; padding: 0;}
+  #otros td{
+    vertical-align: middle; 
+    text-align: center; 
+    margin: 0; 
+    padding: 0;
+  }
+  #otros p{width: 50%; font-size: 18px;}
+  #otros input[type="text"]{
+    width: 49%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  @media print {
+    #nuevaOrden, #barraIzq, button, .btn{display: none;}
+    .formulario{background-color: white;}
+    .h4-responsive{font-size: 30px;}
+    #tablaPDF{page-break-inside: avoid;}
+    @page{
+       margin: 0;
+    }
+    #tablaSuperior tbody{margin: 0;}
+    
+  }
+  
+</style>
+
+<form method="post" novalidate>
+<table id="tablaPDF" style="width: 100%;">
+<tbody>
+
+<!--TABLA SUPERIOR ORDEN DE PAPEL-->
+<tr><td colspan="2">
+  
+  <table border="1" class="table my-3" id="tablaSuperior" style="width: 100%">
+      <thead id="nuevaOrden" style="background-color: black; color: white; text-align: left;">
+          <tr>
+            <th colspan="7" style="padding: 10px;">NUEVA ORDEN DE PRODUCCION <button class="btn enfasis3" style="padding: 3px 10px; margin: 0; float: right;" onclick="window.print(); return false;">IMPRIMIR</button></th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="7" class="font-weight-bold py-0 h4-responsive">
+            <div class="d-flex">
+                <div style="font-weight: bold;margin-right: auto; padding: 3px;">ORDEN DE PAPEL</div>
+                <input class="btn btn-sm py-0 btn-default" style="padding: 3px 20px;" type="button" id="agregar" value="+">
+                <input class="btn btn-sm py-0 btn-danger" style="padding: 3px 20px;" type="button" id="eliminar" value="-">
+            </div>
+        </td></tr>
+        <tr>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">MATERIAL :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">GRS :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">H/R :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">MEDIDA RESMA :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">MEDIDA CORTE :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">PLIEGOS X HOJA :</td>
+            <td class="formulario py-0" style="text-align: center; vertical-align: middle;">PANNEAU DE :</td>
+        </tr>
+        <tr>
+            <td style="padding: 0; text-align: center; margin: 0;">
+              <select name="material" id="material" style="min-width: 200px;" class="h4 m-0 p-0">
+                <option value="couche">Couche</option>
+                <option value="coucheM-B">Couche M-B</option>
+                <option value="coucheM">Couche Mate</option>
+                <option value="coucheBrillo">Couche Brillo</option>
+                <option value="bond">Bond</option>
+                <option value="bondChambril">Bond Chambril</option>
+                <option value="folkote">Folkote</option>
+                <option value="duplex">Duplex</option>
+                <option value="copy">Copy</option>
+                <option value="periodico">Periodico</option>
+                <option value="adhesivo">Adhesivo</option>
+                <option value="lyner">Lyner</option>        
+              </select>
+            </td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="number" style="width:100%;"  min="0" id="grs" ></td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="text" style="width:100%;"  min="0" id="hr" ></td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="text" style="width:100%;"  min="0" id="medidaResma" ></td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="text" style="width:100%;"  min="0" id="medidaCorte" onkeyup="fAgrega();" ></td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="number" style="width:100%;"  min="0" id="pliegosHoja" ></td>
+            <td style="padding: 0; text-align: center; margin: 0;"><input class="h4 m-0 p-0" type="text" style="width:100%;"  min="0" id="panneau" ></td>
+        </tr>
+      </tbody>
+  </table>
+  
+</td></tr>
+
+<!--TABLA CENTRAL CONTENIDO GENERAL-->
+<tr>
+
+  <!--CONTENIDO LATERAL IZQUIERDO-->
+  <td class="pr-1" width="50%" style="vertical-align: top; min-width: 500px;">
+
+    <!--DETALLE DE PAPEL, MAQUINA Y TIPO DE IMPRESION-->
+    <table class="table table-bordered" style="width: 100%;">
+      <tbody>
+        
+        <!--DETALLE-->
+        <tr>
+          <td class="formulario py-0 h5-responsive" style="vertical-align: middle; text-align: center;">DETALLE DE PAPEL :</td>
+          <td style=" padding: 0; vertical-align: middle;"><input style="width: 100%; text-align: center;" type="text" id="detallePapel" class="h4 m-0"></td>
+        </tr>
+
+        <!--MAQUINA-->
+        <tr>
+          <td class="formulario py-0 h5-responsive" style="vertical-align: middle; text-align: center;">MAQUINAS :</td>
+          <td style=" padding: 0; vertical-align: middle; text-align: center;"><select name="maquinas" id="maquinas" class="h4 m-0" style="width: 100%;" onChange="pasarValorMaquina();"></select></td>
+        </tr>
+
+        <!--TIPO DE IMPRESION-->
+        <tr>
+          <td class="formulario py-0 h5-responsive" style="vertical-align: middle; text-align: center;">TIPO DE IMPRESION :</td>
+          <td style=" padding: 0; vertical-align: middle; text-align: center;" id="agregarInput">
+              <div><input type="text" id="tipoImpresion" value="" style="width: 100%;" class="h4 m-0" disabled></div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table> 
+
+    <!--DETALLES DEL PLIEGO-->
+    <table border id="tablaAgregar" style="width: 100%;">
+      <tbody>
+        <!--DESCRIPCION TITULO-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">
+              <div class="d-flex justify-content-end">
+                  <div class="pt-1" style="margin-right: auto; float: left;">DESCRIPCION</div>
+                  <input class="btn px-2 py-0 btn-default" style="float: right" type="button" id="añadir" value="+">
+                  <input class="btn px-2 py-0 btn-danger" style="float: right" type="button" id="desaparecer" value="-" >
+              </div>
+            </td>
+            <td class="p-0 m-0"><input style="width: 100%; text-align: center;" type="text" id="cuadroa0" value="OTROS" class="m-0"></td>
+        </tr>
+
+        <!--MEDIDA DEL P/M-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">MEDIDA DE P/M</td>
+            <td class="p-0 m-0 "><input class="w-100 h5 m-0" type="text" id="cuadroa1"></td>
+        </tr>
+
+        <!--CANTIDAD EN P/M-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">CANTIDAD EN P/M</td>
+            <td class="p-0 m-0"><input class="w-100 cantidad1 h5 m-0" type="text" onkeyup="sumaTablaDescripcion();" id="cuadroa2"></td>
+        </tr>
+
+        <!--DEMASIA EN P/M-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">DEMASIA EN P/M</td>
+            <td class="p-0 m-0 "><input class="w-100 cantidad1 h5 m-0" type="text" onkeyup="sumaTablaDescripcion();" id="cuadroa3"></td>
+        </tr>
+
+        <!--TOTAL DE PAPEL ENTREGADO-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">TOTAL DE PAPEL ENTREGADO</td>
+            <td class="p-0 m-0 "><input class="w-100 h5 m-0" type="text" id="cuadroa4" readonly></td>
+        </tr>
+
+        <!--TOTAL HOJAS RESMA-->
+        <tr>
+            <td class="p-0 pl-1 m-0 formulario">TOTAL HOJAS RESMAS</td>
+            <td class="p-0 m-0"><input class="w-100 h5 m-0" type="text" id="cuadroa5"></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!--COLOR ESPECIAL Y TIPO DE BARNIZ-->
+    <table class="table" style="width: 100%;">
+      <tbody>
+        <tr>
+            <td colspan="4" class="p-0">COLOR ESPECIAL :<input type="text" id="colorEspecial" style="width: 80%;" class="h3 ml-2 my-2 m-0"></td>
+        </tr>
+        <tr>
+            <td class="formulario py-0" colspan="2" width="50%;">Barniz Offset :</td>
+            <td class="formulario py-0" colspan="2" width="50%;">Barniz Acrilico: </td>
+        </tr>
+        <tr>
+            <td  class=" p-0 m-0 " align="center" colspan="2">
+             <select name="barnizOffset" id="barnizOffset" class="w-100 h4">
+                  <option value="ninguno">-</option>
+                  <option value="OFFB">BRILLANTE</option>
+                  <option value="OFFM">MATE</option>
+                  <option value="OFFB-2C">BRILLANTE 2C</option>
+                  <option value="OFFM-2C">MATE 2C</option>
+              </select>
+            </td>
+            <td  class=" p-0 m-0 " align="center" colspan="2">
+             <select name="barnizAcrilico" id="barnizAcrilico" class="w-100 h4">
+                  <option value="ninguno">-</option>
+                  <option value="ACRB">BRILLANTE</option>
+                  <option value="ACRM">MATE</option>
+                  <option value="ACRB-2c">BRILLANTE 2C</option>
+                  <option value="ACRM-2C">MATE 2C</option>
+              </select>
+            </td>
+        </tr>
+      </tbody>
+    </table> 
+
+    <!--ENCUADERNACION-->
+    <table class="table" style="width: 100%; border-top: 5px black solid">
+     <thead>
+        <tr><th colspan="7" class="font-weight-bold py-0 h4-responsive">ENCUADERNACION :</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  class="my-0">
+            <td class="formulario py-1">Doblez :</td>
+            <td class="formulario py-1">Compaginado:</td>
+            <td class="formulario py-1">Encolado :</td>
+        </tr>
+        <tr>
+          <td class=" p-0 m-0 " align="center">
+           <select name="tipoDoblez" id="tipoDoblez" class="w-100 h4">
+                <option value="ninguno">-</option>
+                <option value="revista">REVISTA</option>
+                <option value="maquina">DIPTICO</option>
+                <option value="triptico">TRIPTICO</option>
+                <option value="cuadriptico">CUADRIPTICO</option>
+                <option value="cruz">CRUZ</option>
+                <option value="man1">MAN1</option>
+                <option value="man2">MAN2</option>
+                <option value="man3">MAN3</option>
+            </select>
+          </td>
+          <td class=" p-0 m-0 " align="center">
+           <select name="tipoCompaginado" id="tipoCompaginado" class="w-100 h4">
+               <option value="ninguno">-</option>
+                <option value="grapas">A 2 GRAPAS</option>
+                <option value="francesa">A LA FRANCESA</option>
+            </select>
+          </td>
+          <td class=" p-0 m-0 " align="center">
+           <select name="tipoEncolado" id="tipoEncolado" class="w-100 h4">
+               <option value="ninguno">-</option>
+                <option value="alfrio">AL FRIO</option>
+                <option value="alcalor">AL CALOR</option>
+                <option value="solapas">SOLAPAS</option>
+            </select>
+          </td>
+        </tr> 
+      </tbody>
+    </table> 
+
+    <!--ACABADO BARNIZ PLASTIFICADO-->
+    <table class="table" style="width: 100%; border-top: 5px black solid">
+      <thead>
+        <tr><th colspan="2" class="font-weight-bold py-0 h4-responsive">ACABADO :</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td class="formulario py-1" width="50%;">Barniz :</td>
+            <td class="formulario py-1" width="50%;">Plastificado: </td>
+        </tr>
+        <tr> 
+            <td class=" p-0 m-0 " align="center">
+             <select name="tipoBarniz" id="tipoBarniz" class="w-100 h4">
+                  <option value="ninguno">-</option>
+                  <option value="UV-B">UV Brillante</option>
+                  <option value="UV-M">UV Mate</option>
+                  <option value="UVSB">UV Sectorizado Brillante</option>
+                  <option value="UVSM">UV Sectorizado Mate</option>
+                  <option value="UV-B-2C">UV Brillante 2C</option>
+                  <option value="UV-M-2C">UV Mate 2C</option>
+                  <option value="UVSB-2C">UV Sectorizado Brillante 2C</option>
+                  <option value="UVSM-2C">UV Sectorizado Mate 2C</option>
+              </select>
+            </td>
+            <td class=" p-0 m-0" align="center">
+               <select name="tipoBarniz" id="tipoPlastificado" class="w-100 h4">
+                  <option value="ninguno">-</option>
+                  <option value="PL-B">Brillante</option>
+                  <option value="PL-M">Mate</option>
+                  <option value="PL-B-2C">Brillante 2C</option>
+                  <option value="PL-M-2C">Mate 2C</option>
+              </select> 
+            </td>
+        </tr> 
+      </tbody>
+    </table>
+
+    <!--ACABADO OTROS-->
+    <table class="table" id="otros" style="width: 100%;">
+
+        <tr>
+            <!--PEGADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Pegado </p>
+              <input type="checkbox" id="pegadoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+            
+            <!--PERFORADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Perforado </p>
+              <input type="checkbox" id="perforadoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+        </tr>
+        <tr>
+            <!--CORTE-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Corte Final</p>
+              <input type="checkbox" id="corteFinalAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+            
+            <!--FAJILLADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Fajillado </p>
+              <input type="checkbox" id="fajilladoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+        </tr>
+        <tr>
+            <!--REFILADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Refilados </p>
+              <input type="checkbox" id="refiladosAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+            
+            <!--ALCE-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Alce </p>
+              <input type="checkbox" id="alceAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+        </tr>
+        <tr>
+            <!--TROQUELADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Troquelado </p>
+              <input type="checkbox" id="troqueladoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+            
+            <!--CONTADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Contado </p>
+              <input type="checkbox" id="contadoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>                     
+        </tr>
+        <tr>
+            <!--NUMERADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Numerado </p>
+              <input type="checkbox" id="numeradoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>
+            
+            <!--CONTRAPLACADO-->
+            <td>
+              <p class="mx-3" style="float: left; padding: 0; margin: 0;">Contraplacado</p>
+              <input type="checkbox" id="contraplacadoAcabado" style="float: left; padding: 0; margin: 0;">
+            </td>                   
+        </tr>
+        <tr>
+           <!--OTROS-->
+           <td>
+             <div class="d-flex">
+                  <p class="pt-1 mr-auto" style="margin: 0; float: left;">Otros 1 </p>
+                  <input class="btn px-2 py-0 btn-default" style="float: right;" type="button" id="añadirOtros" value="+">
+                  <input class="btn px-2 py-0 btn-danger" style="float: right;" type="button" id="eliminarOtros" value="-" >
+             </div>
+            </td>
+           <td>
+            <div class="form-check form-check-inline">
+               <input class="mx-2" style="padding: 0; margin: 0;" type="checkbox" id="otros1" >
+               <input type="text" style="padding: 0; margin: 0;" id="form1" class="form-control w-75">
+            </div>
+           </td>                       
+        </tr>       
+
+    </table>    
+    
+    <!--OBSERVACIONES-->
+    <table class="table" id="observacion" style="width: 100%; border-top: 5px black solid">
+        <thead><tr><th class="font-weight-bold py-0 h4-responsive">OBSERVACIONES :</th></tr></thead>
+        <tbody><tr><td class="p-0 m-0"><textarea class="form-control rounded-0 h1-responsive" rows="2" id="textarea" ></textarea></td></tr></tbody>
+    </table>
+
+  </td>
+  
+  <!--CONTENIDO LATERAL DERECHO-->
+  <td class="pl-1" width="50%" style="vertical-align: top; min-width: 500px;">
+
+    <!--DATOS DE LA ORDEN DE PRODUCCION-->
+    <table class="table" style="width: 100%; border-top: 5px black solid">
+      <thead>
+        <tr><th align="left" colspan="7" class="font-weight-bold pb-0 h4-responsive py-0"  >ORDEN DE PRODUCCION</th></tr>
+      </thead>
+      <tbody>
+        
+        <!--OP-->
+        <tr>
+            <td class="formulario py-1">OP :</td>
+            <td class="py-1" ><input type="text" class="w-100 h3" min="0" id="codigoOP" maxlength="9"></td>
+        </tr>
+        
+        <!--CLIENTE-->
+        <tr>
+            <td class="formulario py-1">CLIENTE :</td>
+            <td class="py-1"><select class="w-100 h3" name="cliente" id="cliente"></select></td>
+        </tr> 
+        
+        <!--CANTIDAD-->
+        <tr> 
+            <td class="formulario py-1">CANTIDAD :</td>
+            <td class="py-1"><input type="number" min="0" class="w-100 h4" id="cantidad" style="max-width: 210px">
+            <select name="c" id="c" style="max-width: 200px" class="h4">
+                <option value="unidad">UNIDADES</option>
+                <option value="cieno">CIENTOS</option>
+                <option value="millar">MILLARES</option>
+            </select>
+            </td>
+        </tr>
+        
+        <!--DETALLE-->
+        <tr>
+            <td colspan="2" class="py-3">
+              <label for="detalle">DETALLE :</label>
+              <textarea class="form-control rounded-0 h3-responsive font-weight-bold" id="detalle" ></textarea>
+            </td>
+        </tr>
+        
+        <!--CANTIDAD DE ITEMS-->
+        <tr>
+            <td class="formulario py-1">CANTIDAD DE ITEMS :</td>
+            <td class="py-1"><input type="text" class="w-100 h3" min="0" id="cantidadPedido" ></td>
+        </tr>
+        
+        <!--N° DE ITEM-->
+        <tr>
+            <td class="formulario py-1">N° DE ITEM :</td>
+            <td class="py-1"><input type="text" class="w-100 h3" min="0" id="item" maxlength="2"></td>
+        </tr> 
+        
+        <!--CODIGO DEL ITEM-->
+        <tr>
+            <td class="formulario py-1">CODIGO DEL ITEM :</td>
+            <td class="py-1"><input type="text" class="w-100 h3" min="0" id="codigoItem" maxlength="12"></td>
+        </tr>
+        
+        <!--RECIBIDO POR-->
+        <tr> 
+            <td class="formulario py-1">RECIBIDO POR :</td>
+            <td class="py-1">
+              <select name="multiple[]" class="w-100 h3">
+                <option value="">Seleccionar Ejecutiva</option>
+                <option value="35">Fabiola Morales</option>
+                <option value="39">Yrma Paucar</option>
+                <option value="54">Milagros Salinas</option>
+                <option value="28">Liz Guerrero</option>
+                <option value="49">Jose Ramos Ledesma</option>
+                <option value="74">Alan Lavanda</option>
+              </select>
+            </td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+    <!--DATOS DE PRE PRENSA-->
+    <table class="table pprensa" style="width: 100%; border-top: 5px black solid">
+       <thead>
+            <tr><th colspan="6" class="font-weight-bold pb-0 h4-responsive py-0 mx-0">PRE-PRENSA :</th></tr>
+        </thead>
+       <tbody>
+          <tr>
+            <th colspan="6"  class="formulario py-1">Se entrega :</th>
+          </tr>
+          <tr>
+            <td class="py-1">Prueba de color : </td>
+            <td class="py-1"><input type="checkbox" id="pruebaColor" ></td>
+            <td class="py-1">Machote </td>
+            <td class="py-1"><input type="checkbox" id="machote" ></td>
+            <td class="py-1">Laser B/N : </td>
+            <td class="py-1"><input type="checkbox" id="laserBN" ></td>
+          </tr>
+          <tr>
+            <th colspan="6" class="formulario py-1">Especificaciones del trabajo :</th>
+          </tr>
+          <tr>
+            <td class="py-1">Formato Abierto : </td>
+            <td class="py-1" colspan="2"><input type="text" id="fAbierto" style="max-width: 180px;"></td>
+            <td class="py-1">Formato Cerrado : </td>
+            <td class="py-1" colspan="2"><input type="text" id="fCerrado" style="max-width: 180px;"></td>
+          </tr>
+          <tr>
+            <td class="py-1 px-0 pl-2">Colores : <select name="selectColores" id="selectColores" style="max-width: 40px">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option></select></td>
+            <td class="py-1" colspan="3"><input type="text" id="colores" style="max-width: 260px;"></td>
+            <td class="py-1">LPI : </td>
+            <td class="py-1"><input type="text" id="lpi" style="max-width: 140px;"></td>
+          </tr>
+          <tr>
+            <td class="py-1" colspan="2" >Tipo de Impresion :</td>
+            <td class="py-1" colspan="4">
+              <div class="form-group multiple-form-group">
+                <div class="form-group input-group my-0">
+                    <select name="multiple[]" class="form-control" id="listadoTipoImpresion" onChange="pasarValorImpresion(listadoTipoImpresion);">
+                      <option value="" disabled selected>Seleccionar Tipo de Impresion</option>
+                      <option value="soloTira">SOLO TIRA</option>
+                      <option value="t-rjunta">T/R JUNTA</option>
+                      <option value="t-raparte">T/R APARTE</option>
+                      <option value="doblePinza">DOBLE PINZA</option>
+                    </select>
+                    <span class="input-group-btn"><button type="button" class="btn btn-default btn-sm px-2 py-1 btn-add">+
+                    </button></span>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="py-1" colspan="2">Quality Paper</td>
+            <td class="py-1"><input type="checkbox" id="qualityPaper" ></td>
+            <td class="py-1" colspan="2">Contrato Marco para Telefonica</td>
+            <td class="py-1"><input type="checkbox" id="contratoMarco" ></td>
+          </tr>
+       </tbody>
+    </table> 
+     
+    <!--DATOS DE EMPAQUETADO-->
+    <table class="table empaq" id="costos" style="width: 100%; border-top: 5px black solid">
+      <thead>
+          <tr><th colspan="5" class="font-weight-bold h4-responsive py-0">EMPAQUETADO :</th></tr>
+          <tr>
+              <td style="margin: 0; padding: 0;" colspan="2">Caja</td>
+              <td class="py-1"><input type="checkbox" id="caja"></td>
+              <td style="margin: 0; padding: 0;">Empaquetado</td>
+               <td class="py-1"><input type="checkbox" id="empaque" checked></td>
+          </tr>
+          <tr>
+            <th colspan="4" class="font-weight-bold py-0 pb-1">DETALLES :</th>
+            <th colspan="1" class="font-weight-bold py-0" style="text-align: left">
+                <div class="d-flex">
+                    <p class="m-0 p-0 pt-1">SUB TOTAL :</p>
+                    <input class="btn px-2 py-0 btn-default" type="button" id="añadirCosto" value="+" >
+                    <input class="btn px-2 py-0  btn-danger" type="button" id="eliminarCosto" value="-">
+                </div>
+            </th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td style="margin: 0; padding: 0;"><input type="number" min='1' style="max-width: 100px;" id="inputPaquete1" class="monto1" onkeyup="multi();"></td>
+            <td style="margin: 0; padding: 0;">PAQ. X</td>
+            <td style="margin: 0; padding: 0;"><input type="number" min='1' style="max-width: 100px;" id="inputUnid1"class="monto1" onkeyup="multi();"></td>
+            <td style="margin: 0; padding: 0;">UNID.</td>
+            <td style="margin: 0; padding: 0;" colspan="2"><input type="number" min='1' style="max-width: 150px;" id="subtotal1" disabled></td>    
+        </tr>         
+      </tbody>
+    </table>
+
+    <!--DATOS DE TOTAL EMPAQUETADO-->
+    <table class="table" style="width: 100%;">
+        <tbody>
+            <tr>
+                <td colspan="4" class="formulario py-0 pr-4" style="width: 75%; padding: 0; margin: 0; text-align: right; font-weight: bold;">TOTAL:</td>
+                <td class="py-0"><input id="totalFinalDatos" type="number" min='0' disabled></td>
+            </tr>
+        </tbody>
+    </table>
+      
+  </td>
+  
+</tr>
+
+<!--TABLA INFERIOR MODELO DE IMPRESION-->           
+<tr><td colspan="2">
+
+  <!--DETALLES DE IMPRESION-->    
+   <table class="table" style="width: 100%; border-top: 5px black solid;">
+      <tbody>
+        <tr>
+            <td class="formulario p-0 m-0 text-center">MAQUINA :</td>
+            <td class="p-0 m-0"><input type="text" id="maquinaMostrar" class="w-100 h3 m-0" disabled></td>
+            <td class="formulario p-0 m-0 text-center">N DE PLIEGOS : </td>
+            <td class="p-0 m-0"><input type="number" class=" w-100 h3 m-0" min="0" id="nDePliegos" ></td>
+        </tr>
+        <tr>
+            <td class="formulario p-0 m-0 text-center">PLIEGO :</td>
+            <td class="p-0 m-0"><input type="text" id="pliego" class="w-100 h3 m-0" disabled></td>
+            <td class="formulario p-0 m-0 text-center">N DE PLACAS : </td>
+            <td class="p-0 m-0"><input type="number" class=" w-100 h3 m-0" min="0" id="nDePlacas" ></td>
+        </tr>
+      </tbody>
+   </table>
+   
+   <!--MODELO E INDICACIONES DE IMPRESION-->  
+    <table class="table" style="width: 100%;">
+     <tr>
+      <!--MODELO--> 
+      <td class="pr-1" width="80%" style="vertical-align: top; min-width: 500px;">
+        
+        <!--CONTENEDOR DEL MODELO--> 
+        <div class="row" id="contenedorModelo">
+          
+          <!--TIRA--> 
+          <div class="col-6">
+            <img src="/CT-FrontEnd/Modulos/ModOrden/PLIEGO.png" alt="PLIEGO 1" style="max-width:450px; position: absolute;z-index: -100;">
+            <!--TIRA/RETIRA--> 
+            <div class="MODELO p-2 row" style="margin-top: 28px; width: 450px; height: 215px;">
+              <div class="T text-center col-12 display-1 my-auto">T</div>
+            </div>
+            <!--PINZA--> 
+            <div class="pinza" style="width: 450px; height: 25px;"><input type="text" value="PINZA : " class="text-center font-weight-bold"></div>
+          </div>
+          
+          <!--RETIRA--> 
+          <div class="col-6">
+            <img src="/CT-FrontEnd/Modulos/ModOrden/PLIEGO.png" alt="PLIEGO 2" style="max-width:450px; position: absolute;z-index: -100; left:10;">
+             <!--TIRA/RETIRA-->  
+            <div class="MODELO p-2 row" style="margin-top: 28px; width: 450px; height: 215px;">
+              <div class="T text-center col-12 display-1 my-auto">R</div>
+ 
+            </div>
+             <!--PINZA-->  
+            <div class="pinza" style="width: 450px; height: 25px;"><input type="text" value="PINZA : " class="text-center font-weight-bold">
+          </div>
+        </div>
+         
+      </td>
+       
+      <!--INDICACIONES--> 
+      <td class="pl-1" width="20%" style="vertical-align: top; max-width: 300px;">
+          <label for="indicaciones" class="w-100 p-0 m-0 pl-4">INDICACIONES :</label>
+          <textarea class="form-control rounded-0 h3-responsive font-weight-bold" rows="1" id="indicaciones" style="max-height: 250px;"></textarea>
+      </td>
+       
+    </tr>
+   </table>
+
+  <!--BOTONES-->
+  <div style="text-align: center;">
+      <button type="button"  class="btn boton" onclick="validar()">Guardar</button>
+      <button type="reset" class="btn boton" id="reset">Limpiar</button>
+  </div>
+  <div id="resultado" class="text-center h3-responsive principal-text my-3 font-weight-bold"></div>
+
+</td></tr>
+            
+</tbody>
+</table>  
+</form>
+
+<script>
+    
+mostrarMaquina();
+mostrarCliente();
+    
+/*=============================================
+    FUNCION AJUSTAR TEXTAREA
+=============================================*/   
+
+function autoTextarea(id) {
+  document.getElementById(id).addEventListener('keyup', function() {
+    this.style.overflow = 'hidden';
+    this.style.height = 0;
+    this.style.height = this.scrollHeight + 'px';
+  }, false);
+}
+
+/*=============================================
+    LLAMADO DE ID DE TEXTAREA'S
+=============================================*/   
+    
+autoTextarea('detalle');
+autoTextarea('textarea');
+autoTextarea('indicaciones');
+    
+/*=============================================
+    CARGAR MAQUINA
+=============================================*/
+    
+//--GENERAR OPCIONES DE MAQUINA--
+function mostrarMaquina(){
+    var boxMaquina="";
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModOrden/Controlador_MostrarMaquinas.php',
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+            boxMaquina+="<option value='' selected>Elegir Maquina</option>";
+            $("#maquinas").html(boxMaquina);
+        },
+        success: function(datos){
+            
+            if(datos.response=="0"){
+                boxMaquina+="<option value='' selected>Elegir Maquina</option>";
+                $("#maquinas").html(boxMaquina);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxMaquina+="<option value='' selected>Elegir Maquina</option>";
+                    }
+                    boxMaquina+="<option value='"+datos[i].MAQUICODIGO+"'>"+datos[i].MAQUINOMBRE+"</option>";
+                }
+                $("#maquinas").html(boxMaquina);
+            }
+        }
+    });  
+}
+      
+/*=============================================
+    CARGAR CLIENTES
+=============================================*/
+    
+//--GENERAR OPCIONES DE CLIENTE--
+function mostrarCliente(){
+    var boxCliente="";
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Clientes/Controlador_MostrarTodosClientes.php',
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+            boxCliente+="<option value='' selected>Elegir Cliente</option>";
+            $("#cliente").html(boxCliente);
+        },
+        success: function(datos){
+            
+            if(datos.response=="0"){
+                boxCliente+="<option value='' selected>Elegir Cliente</option>";
+                $("#cliente").html(boxCliente);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxCliente+="<option value='' selected>Elegir Cliente</option>";
+                    }
+                    boxCliente+="<option value='"+datos[i].CLIENCODIGO+"'>"+datos[i].CLIENNOMBRE_CORTO+"</option>";
+                }
+                $("#cliente").html(boxCliente);
+            }
+        }
+    });  
+}
+    
+/*=============================================
+    FUNCION PASAR VALOR DEL INPUT PLIEGO
+=============================================*/
+    
+function fAgrega(){
+    document.getElementById("pliego").value = document.getElementById("medidaCorte").value;
+}         
+  
+/*=============================================
+    GENERAR COLUMNAS DE LA TABLA DESCRIPCION
+=============================================*/    
+
+function createCell(cell,style,style2, style3,style4) {
+    var input = document.createElement('input')
+    input.setAttribute('class', style); 
+    input.setAttribute('type',style2);
+    input.setAttribute('id', style3);
+    if(style4=="readonly"){input.setAttribute('readonly',style4);}
+    input.setAttribute('onkeyup',style4);
+    cell.appendChild(input); 
+} 
+
+/*============================================================
+    FUNCION PARA PASAR VALOR DE SELECT MAQUINA A INPUT MAQUINA
+==============================================================*/ 
+    
+function pasarValorMaquina(){
+    var tamaño=maquinas.length;
+    var op=document.getElementById("maquinas"); 
+    var valor=op.value;
+    var text =op.options[op.selectedIndex].innerText;
+    var tt=document.getElementById("maquinaMostrar"); 
+    for (var i=0; i<tamaño; i++){
+        if(i==0){
+            tt.value="";
+        }else{
+            if (op.selectedIndex==i)tt.value=text; 
+        }
+    }
+}
+    
+/*=============================================
+    FUNCIONES CLICK
+=============================================*/     
+    
+$(document).ready(function(){
+        var añadir=1;
+        var pulsar=1;
+        var agregar=1;
+        var acumulador=1;
+    
+    //--AGREGAR FILA DE LA TABLA ORDEN DE PAPEL--
+    $("#agregar").click(function(){
+        var tds=7;
+        var trs=$("#tablaSuperior tr").length;
+        var nuevaFila="<tr>";
+        añadir=añadir+1;
+        if(añadir>=2 && añadir<=3){
+            for(var i=0;i<tds;i++){
+            if(i==2 || i==3 || i==4){
+                nuevaFila+="<td style='padding: 0; text-align: center; margin: 0;'><input type='text' class='h4 m-0 p-0' style='width:100%;'></td>";
+            }else{
+              if(i==0){
+                nuevaFila+="<td style='padding: 0; text-align: center; margin: 0;'>\
+              <select name='material' id='material' style='min-width: 200px;' class='h4 m-0 p-0'>\
+                <option value='couche'>Couche</option>\
+                <option value='coucheM-B'>Couche M-B</option>\
+                <option value='coucheM'>Couche Mate</option>\
+                <option value='coucheBrillo'>Couche Brillo</option>\
+                <option value='bond'>Bond</option>\
+                <option value='bondChambril'>Bond Chambril</option>\
+                <option value='folkote'>Folkote</option>\
+                <option value='duplex'>Duplex</option>\
+                <option value='copy'>Copy</option>\
+                <option value='periodico'>Periodico</option>\
+                <option value='adhesivo'>Adhesivo</option>\
+                <option value='lyner'>Lyner</option>        \
+              </select>\
+            </td>";
+              }else{
+                nuevaFila+="<td style='padding: 0; text-align: center; margin: 0;'><input type='number' class='h4 m-0 p-0' style='width:100%;' min='0'></td>";
+              }
+            }
+
+        }
+        nuevaFila+="</tr>";
+        $("#tablaSuperior").append(nuevaFila);
+        }else{
+            añadir=3;
+        }
+    });
+    
+    //--ELIMINAR FILA DE LA TABLA ORDEN DE PAPEL--
+    $("#eliminar").click(function(){
+        añadir=añadir-1;
+        if(añadir>=1){
+            var trs=$("#tablaSuperior tr").length;
+            if(trs>1){
+                $("#tablaSuperior tr:last").remove();
+            }
+        }else{
+            añadir=1;  
+        }
+    });
+    
+    //--AGREGAR COLUMNAS DE LA TABLA DESCRIPCION--
+    $("#añadir").click(function(){
+        pulsar=pulsar+1;
+        if(pulsar>=2 && pulsar<=4){
+            var tbl = document.getElementById('tablaAgregar'),
+                i;
+            switch(pulsar) {
+              case 2:
+                for (i = 0; i < tbl.rows.length; i++) {
+                    if(i==2 || i==3){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0 cantidad2','text','cuadrob'.concat(i), 'sumaTablaDescripcion();');  
+                    }else  if(i==4){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadrob'.concat(i),"readonly");  
+                    }else{
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadrob'.concat(i));  
+                    }
+                }
+                break;
+              case 3:
+                for (i = 0; i < tbl.rows.length; i++) {
+                    if(i==2 || i==3){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0 cantidad3','text','cuadroc'.concat(i),'sumaTablaDescripcion();');  
+                    }else if(i==4){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadroc'.concat(i),"readonly");
+                    }else{
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadroc'.concat(i));
+                    }
+                                  
+                }
+                break;
+              case 4:
+                for (i = 0; i < tbl.rows.length; i++) {
+                    if(i==2 || i==3){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0 cantidad4','text','cuadrod'.concat(i),'sumaTablaDescripcion();');  
+                    }else if(i==4){
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadrod'.concat(i),"readonly");      
+                    }else{
+                        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), 'w-100 h5 m-0','text','cuadrod'.concat(i));         
+                    }
+                                       
+                }
+                break;
+              default:
+            }       
+            
+        }else{
+            pulsar=4;
+        }
+        sumaTablaDescripcion();        
+    });
+    
+    //--ELIMINAR COLUMNAS DE LA TABLA DESCRIPCION--
+    $("#desaparecer").click(function(){
+         pulsar=pulsar-1;
+            if(pulsar>=1){
+                var tbl1 = document.getElementById('tablaAgregar'),
+                lastCol = tbl1.rows[0].cells.length - 1,
+                i, j;
+            for (i = 0; i < tbl1.rows.length; i++) {
+                j=lastCol;
+                tbl1.rows[i].deleteCell(j);
+            }
+        }else{
+            pulsar=1;
+        }
+
+    });
+    
+    //--AGREGAR FILAS DE LA TABLA OTROS--
+    $("#añadirOtros").click(function(){
+        var tds=2;
+        var trs=$("#otros tr").length;
+        var nuevaFila="<tr>";
+        agregar=agregar+1;
+        if(agregar>=2 && agregar<=3){
+          for(var i=1;i<tds;i++){
+            nuevaFila+="<td>Otros "+[agregar]+"</td><td>"+
+            "<div class='form-check form-check-inline'>"+
+            " <input class='mx-2' type='checkbox' id='Otros"+[agregar]+"' >"
+            +"<input type='text' id='form1' class='form-control w-75'>"+
+            "</div>"+
+            "</td>";
+          }
+          nuevaFila+="</tr>";
+          $("#otros").append(nuevaFila);
+        }else{
+          agregar=3;
+        }
+    });
+    
+    //--ELIMINAR FILAS DE LA TABLA OTROS--
+    $("#eliminarOtros").click(function(){
+        agregar=agregar-1;
+        if(agregar>=1){
+            var trs=$("#otros tr").length;
+            if(trs>1){
+                $("#otros tr:last").remove();
+            }
+        }else{
+            agregar=1;
+        }
+        
+    });
+  
+    //--AGREGAR FILAS DE LA TABLA EMPAQUETADO--
+    $("#añadirCosto").click(function(){
+        var nuevo ="<tr>";
+        acumulador+=1;
+        if(acumulador>=2 && acumulador<=10){
+            nuevo+="<td style='margin: 0; padding: 0;'><input type='number' min='1' style='max-width: 100px;' id='inputPaquete"+[acumulador]+"'  class='monto"+[acumulador]+"' onkeyup='multi();' ></td>\
+            <td style='margin: 0; padding: 0;'>PAQ. X</td>\
+            <td style='margin: 0; padding: 0;'><input type='number' min='1' style='max-width: 100px;' id='inputUnid"+[acumulador]+"'  class='monto"+[acumulador]+"' onkeyup='multi();' ></td>\
+            <td style='margin: 0; padding: 0;'>UNID.</td>\
+            <td style='margin: 0; padding: 0;' colspan='2'><input type='number' min='1' style='max-width: 150px;' id='subtotal"+[acumulador]+"' readonly ></td>";
+            nuevo+="</tr>";
+            $("#costos").append(nuevo);
+        }else{
+            acumulador=10;
+        }
+
+    });
+    
+    //--ELIMINAR FILAS DE LA TABLA EMPAQUETADO--
+    $("#eliminarCosto").click(function(){
+        var reducir="";
+        var reducido="";
+        var resultado="";
+        acumulador-=1;
+        if(acumulador>=1){
+            var trs=$("#costos tr").length;
+            if(trs>1){
+                switch(trs) {
+                  case 5:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal2").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 6:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal3").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 7:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal4").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 8:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal5").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 9:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal6").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 10:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal7").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 11:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal8").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 12:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal9").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;
+                  case 13:
+                        reducido = document.getElementById("totalFinalDatos").value;reducir = document.getElementById("subtotal10").value;resultado = reducido-reducir;
+                        $("#totalFinalDatos").val(resultado);
+                    break;        
+                  default:
+                    // code block
+                }
+                $("#costos tr:last").remove()
+            }
+        }else{
+            acumulador=1;
+        }
+
+    });
+  
+    //--HABILITAR EL CHECKBOX DE CAJA--
+    $("#caja").click(function(){
+        document.getElementById("caja").checked = false;
+        document.getElementById("empaque").checked = false;
+        this.checked = true;
+        document.getElementById("inputPaquete1").disabled = true;
+        document.getElementById("inputUnid1").disabled = true;
+        document.getElementById("subtotal1").disabled = true;
+        document.getElementById("añadirCosto").disabled = true;
+        document.getElementById("eliminarCosto").disabled = true;
+        $("#inputPaquete1").val("");
+        $("#inputUnid1").val("");
+        $("#subtotal1").val("");
+        $("#totalFinalDatos").val("");
+        var ext=$("#costos tr").length;
+       console.log(ext)
+       for (var k=4; k<ext; k++){
+           $("#costos tr:last").remove();
+       }
+        acumulador=1;
+       });
+    
+    //--HABILITAR EL CHECKBOX DE EMPAQUETADO--
+    $("#empaque").click(function(){
+        document.getElementById("caja").checked = false;
+        document.getElementById("empaque").checked = false;
+        this.checked = true;
+        document.getElementById("inputPaquete1").disabled = false;
+        document.getElementById("inputUnid1").disabled = false;
+        document.getElementById("añadirCosto").disabled = false;
+        document.getElementById("eliminarCosto").disabled = false; 
+    });
+    
+});    
+    
+/*===================================================
+    FUNCION PARA AÑADIR O ELIMINAR CAMPO EN UN SELECT
+=====================================================*/     
+    
+(function ($) {
+    $(function () {
+        
+        var count=0;
+
+        var addFormGroup = function (event) {
+
+          count=count+1;
+          if(count>1){
+              count=1;
+          }else{
+              event.preventDefault();
+
+          var $formGroup = $(this).closest('.form-group');
+
+          var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
+
+          var $formGroupClone = $formGroup.clone();
+
+          $(this)
+              .toggleClass('btn-default btn-add btn-danger btn-remove')
+              .html('–');
+
+
+          $formGroupClone.find('input').val('');
+          $formGroupClone.insertAfter($formGroup);
+
+          var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last');
+             $lastFormGroupLast.find('select').attr('id','listadoDuplicado').attr('onChange','pasarValorImpresion(listadoDuplicado);');
+
+          if ($multipleFormGroup.data('max') <= countFormGroup($multipleFormGroup)) {
+              $lastFormGroupLast.find('.btn-add').attr('disabled', true);
+          }
+           var nuevaFila="<div><input ";    
+          nuevaFila+="type='text' id='tipoImpresion"+(count)+"' value='' style='width: 100%;' class='h4 m-0' disabled></div>";
+          $("#agregarInput").append(nuevaFila);
+      };
+        }
+            
+        var removeFormGroup = function (event) {
+            if(count==1){
+                event.preventDefault();
+            var $formGroup = $(this).closest('.form-group');                
+            var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
+            var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last ');
+                
+                $(this)
+                .toggleClass('btn-default btn-add btn-danger btn-remove')
+                .html('+');
+
+                
+            if ($multipleFormGroup.data('max') >= countFormGroup($multipleFormGroup)) {
+                $lastFormGroupLast.find('.btn-add').attr('disabled', false);
+            }
+            $lastFormGroupLast.remove();   
+                count=count-1;
+            
+            var trs=$("#agregarInput input").length;
+            if(trs>1){
+                $("#agregarInput input:last").remove();
+            }    
+
+            }else{
+                count=0;
+            }
+        };
+        
+        var countFormGroup = function ($form) {
+            return $form.find('.form-group').length;
+        };
+        $(document).on('click', '.btn-add', addFormGroup);
+        $(document).on('click', '.btn-remove', removeFormGroup);
+
+    });
+})(jQuery);
+    
+/*===================================================
+    FUNCION DE GENERAR DE CODIGO DEL ITEM EN OP
+=====================================================*/  
+    
+$(document).ready(function () {
+    $("#codigoOP").keyup(function () {
+        var valor = $(this).val();
+        var uno = valor.toString();
+            $("#item").keyup(function () {
+            var value = $(this).val();    
+            var dos = value.toString();
+            var codigo= uno.concat("-");
+            var codigo2 = codigo.toString();
+            var ultimo=codigo2.concat(dos);
+            $("#codigoItem").val(ultimo);
+        });
+    });
+}); 
+    
+/*===================================================
+  FUNCION DE PASAR VALOR DE SELECT TIPO DE IMPRESION A 
+  INPUT TIPO DE IMPRESION
+=====================================================*/
+
+function pasarValorImpresion(id){
+    
+    switch(id) {
+      case (listadoTipoImpresion):
+        var tamaño=id.length;
+        var op=document.getElementById("listadoTipoImpresion"); 
+        var valor=op.value;
+        var text =op.options[op.selectedIndex].innerText;
+        var tt=document.getElementById("tipoImpresion");
+        for (var i=0; i<tamaño; i++){
+            if(i==0){
+                tt.value="";
+            }else{
+                if (op.selectedIndex==i)tt.value=text; 
+            }
+        }
+        break;
+      case (listadoDuplicado):
+        var tamaño=id.length;
+        var op=document.getElementById("listadoDuplicado"); 
+        var valor=op.value;
+        var text =op.options[op.selectedIndex].innerText;
+        var tt=document.getElementById("tipoImpresion1");
+        for (var j=0; j<tamaño; j++){
+            if(j==0){
+                tt.value="";
+            }else{
+                if (op.selectedIndex==j)tt.value=text; 
+            }
+        }    
+        break;  
+  
+ }
+    
+}   
+  
+/*===================================================
+  CALCULAR EL IMPORTE TOTAL DE EMPAQUETADO
+=====================================================*/  
+
+function multi(){
+    var subtotal = 1;
+    $(".monto1").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal1").val(subtotal);
+	});var sub1=document.getElementById("subtotal1").value;$("#totalFinalDatos").val(sub1);
+    
+    subtotal=1;
+    $(".monto2").each(function(){
+        if ((parseInt($(this).val()))==""){subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal2").val(subtotal);
+	});if(document.getElementById("subtotal2")!=null){var sub2=document.getElementById("subtotal2").value;sub2=parseInt(sub1)+parseInt(sub2);$("#totalFinalDatos").val(sub2);}
+    
+    
+    subtotal=1;
+    $(".monto3").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal3").val(subtotal);
+	});if(document.getElementById("subtotal3")!=null){var sub3=document.getElementById("subtotal3").value;sub3=parseInt(sub2)+parseInt(sub3);$("#totalFinalDatos").val(sub3);}
+    
+    subtotal=1;
+    $(".monto4").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal4").val(subtotal);
+	});if(document.getElementById("subtotal4")!=null){var sub4=document.getElementById("subtotal4").value;sub4=parseInt(sub3)+parseInt(sub4);$("#totalFinalDatos").val(sub4);}
+    
+    subtotal=1;
+    $(".monto5").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal5").val(subtotal);
+	});if(document.getElementById("subtotal5")!=null){var sub5=document.getElementById("subtotal5").value;sub5=parseInt(sub4)+parseInt(sub5);$("#totalFinalDatos").val(sub5);}
+    
+    subtotal=1;
+    $(".monto6").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal6").val(subtotal);
+	});if(document.getElementById("subtotal6")!=null){var sub6=document.getElementById("subtotal6").value;sub6=parseInt(sub5)+parseInt(sub6);$("#totalFinalDatos").val(sub6);}
+    
+    subtotal=1;
+    $(".monto7").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal7").val(subtotal);
+	});if(document.getElementById("subtotal7")!=null){var sub7=document.getElementById("subtotal7").value;sub7=parseInt(sub6)+parseInt(sub7);$("#totalFinalDatos").val(sub7);}
+
+    subtotal=1;
+    $(".monto8").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal8").val(subtotal);
+	});if(document.getElementById("subtotal8")!=null){var sub8=document.getElementById("subtotal8").value;sub8=parseInt(sub7)+parseInt(sub8);$("#totalFinalDatos").val(sub8);}
+    
+    subtotal=1;
+    $(".monto9").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal9").val(subtotal);
+	});if(document.getElementById("subtotal9")!=null){var sub9=document.getElementById("subtotal9").value;sub9=parseInt(sub8)+parseInt(sub9);$("#totalFinalDatos").val(sub9);}
+    
+    subtotal=1;
+    $(".monto10").each(function(){
+        if ((parseInt($(this).val()))=="" ) {subtotal =0;} else {subtotal *= parseInt($(this).val());}$("#subtotal10").val(subtotal);
+	});if(document.getElementById("subtotal10")!=null){var sub10=document.getElementById("subtotal10").value;sub10=parseInt(sub9)+parseInt(sub10);$("#totalFinalDatos").val(sub10);}
+}
+    
+/*===================================================
+  FUNCION PARA REALIZAR SUMA DE CANTIDAD CON DEMASIA
+=====================================================*/    
+    
+function sumaTablaDescripcion(){
+    var suma=0;
+    $(".cantidad1").each(function(){
+        if((parseInt($(this).val()))=="") {suma +=0;} else {suma+= parseInt($(this).val());}$("#cuadroa4").val(suma);});if(isNaN(suma)){ var cuadro="";$("#cuadroa4").val(cuadro);}
+    suma=0;
+    $(".cantidad2").each(function(){
+        if((parseInt($(this).val()))=="") {suma +=0;} else {suma+= parseInt($(this).val());}$("#cuadrob4").val(suma);});if(isNaN(suma)){ var cuadro=""; $("#cuadrob4").val(cuadro);}
+    suma=0;
+    $(".cantidad3").each(function(){
+        if((parseInt($(this).val()))=="") {suma +=0;} else {suma+= parseInt($(this).val());}$("#cuadroc4").val(suma);});if(isNaN(suma)){ var cuadro=""; $("#cuadroc4").val(cuadro);}
+    suma=0;
+    $(".cantidad4").each(function(){
+        if((parseInt($(this).val()))=="") {suma +=0;} else {suma+= parseInt($(this).val());}$("#cuadrod4").val(suma);});if(isNaN(suma)){ var cuadro=""; $("#cuadrod4").val(cuadro);}   
+}
+  
+  
+</script>

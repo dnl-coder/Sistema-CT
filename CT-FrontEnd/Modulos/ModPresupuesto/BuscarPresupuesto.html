@@ -1,0 +1,306 @@
+<style>
+
+  table{width: 100%;}
+  table thead tr th {
+    background-color: black;
+    color: white;
+    text-align: center;
+  }
+  table tr td{vertical-align: top;}
+  
+  input[type="checkbox"]{
+    width: 25px;
+    height: 25px;
+    margin-left: 8px;
+    margin-top: 0px;
+  }
+  input{width: 100%;}
+  
+  .descripcion{min-width: 300px;}
+  
+  .valor:hover{background-color: dodgerblue; cursor: pointer;}
+  .click{background-color: dodgerblue;}
+
+</style>
+ 
+<table>
+  <thead>
+    <tr><th class="p-2" colspan="2">BUSCAR PRESUPUESTO</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="formulario" style="width: 30%;">
+       <div class="container">
+        <div class="row">
+          <div class="col-12 my-4 h3-responsive font-weight-bold">BUSCAR POR:</div>
+          <div class="col-12 h6 pl-5"><input id="0" onClick="opcion(this.id)" type="checkbox" class="m-0 p-0 mr-3">CODIGO</div>
+          <div class="col-12 h6 pl-5"><input id="1" onClick="opcion(this.id)" type="checkbox" class="m-0 p-0 mr-3">CLIENTE</div>
+          <div class="col-12 h6 pl-5"><input id="2" onClick="opcion(this.id)" type="checkbox" class="m-0 p-0 mr-3">VENDEDOR</div>
+          <div class="col-12 h6 mt-4"><input id="valor" onkeyup="vacio()" type="text" class="m-0 p-0 py-1" disabled></div>
+          <div class="col-12 h6"><input type="button" id="buscar" value="BUSCAR" class="m-0 p-0 btn principal" onkeyup="vacio()" onclick="buscar()" ></div>
+          <div class="col-12"><hr></div>
+          <div id="contenedor" class="col-12 text-center h3"></div>
+        </div>
+       </div>
+      </td>
+      <td>
+        <table class="my-4" id="vistaPrevia" style="width: 80%; margin: auto;">
+            <thead>
+                <tr>
+                  <td id="logoEmpresa" rowspan=4 colspan="2"><img src="Modulos/ModPresupuesto/Logo-Computextos.png" width="220" height="65"></td>
+                  <td class="text-right" id="cliente">TELEFONICA DEL PERU</td>  
+                </tr>
+                <tr>
+                  <td id="nPresupuesto" class="h4-responsive font-weight-bold text-right">Presupuesto 3210-19</td> 
+                </tr>
+                <tr>
+                  <td class="text-right" id="fechaRegistroModal">Lince, 13 de Marzo del 2019</td>
+                </tr>
+                <tr>
+                  <td class="text-right font-weight-bold" id="totalVenta">Total: S/. 1000 + IGV</td>
+                </tr>
+            </thead>
+            <tbody id="cuerpovista">
+            </tbody>
+            <tfoot>
+              <tr><td >
+                <div class="font-weight-bold" id="ejecutiva" style="font-size: 13px;"></div>
+                <div class="font-weight-bold"style="font-size: 14px;"> GRUPO COMPUTEXTOS S.A.C.</div>
+              </td></tr>
+            </tfoot>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+  
+  
+</table>
+
+<script>
+  
+  $("#valor").on('keydown', function(e) {
+    if (e.which == 13) {
+        $("#buscar").trigger('click'); console.log("que pedo")
+        return false;
+    }
+  });
+  
+  var op; var c=0;
+  vacio();    
+    
+ function vacio(){
+    var campo1 =  $("#valor").val();
+    if(campo1 != ""){
+      document.getElementById('buscar').disabled=false;
+    }
+    else{   document.getElementById('buscar').disabled=true;
+    }
+ }    
+
+ function opcion(id){
+    op=id;
+    $(":checkbox")[0].checked = false;
+    $(":checkbox")[1].checked = false;
+    $(":checkbox")[2].checked = false;
+    $(":checkbox")[id].checked = true;
+    switch(op){
+        case '0': document.getElementById('valor').placeholder="Ingrese codigo presupuesto";break;
+        case '1': document.getElementById('valor').placeholder="Ingrese nombre corto cliente";break;
+        case '2': document.getElementById('valor').placeholder="Ingrese nombre vendedor";break;         
+    } 
+
+    $("#valor").val("");
+       vacio();      
+    $("#contenedor").html("");
+    $("#valor").prop("disabled",false);
+
+  }
+  
+ function buscar(){
+   //document.getElementById("vistaPrevia").reset();
+   $("#cuerpovista").html("");
+   $("#ejecutiva").html("");
+   
+   var $dato={
+        '_dato': $("#valor").val() }  
+   var  ruta,boxResultado="";
+   switch(op){
+       case '0':  ruta="../CT-BackEnd/Controlador/ModPresupuesto/Controlador_MostrarTodosXCodigo.php" ; break;
+       case '1':  ruta="../CT-BackEnd/Controlador/ModPresupuesto/Controlador_MostrarTodoXCliente.php" ; break;
+       case '2':  ruta="../CT-BackEnd/Controlador/ModPresupuesto/Controlador_MostrarTodoXVendedor.php" ; break;        
+   }
+   $.ajax({
+      url: ruta,
+      type: 'POST',
+      data: $dato,
+      dataType: 'json',
+      error: function(error){
+          if(error.status == 401){
+              console.log("No se pudo establecer conexion con el servidor");
+              $("#contenedor").html("No se pudo establecer conexion con el servidor");
+          }
+          else{
+              console.log("Error no identificado");
+              $("#contenedor").html("Error no identificado");
+          }
+      },
+      success: function(datos){
+          if(datos.response == 0){
+            console.log('ERROR: '+datos.message);
+            $("#contenedor").html('ERROR: '+datos.message);
+
+          }
+          else{
+            for(var i=0; i<datos.length; i++){
+                
+              boxResultado+="<div class='valor enfasis1 my-1 col-12'  id= '"+datos[i].PRESUPNUMERO+"'onclick='vistaPrevia(this.id)'>"+datos[i].PRESUPNUMERO+"</div>"
+            }
+            $("#contenedor").html(boxResultado);
+
+          }
+      }
+    });
+   
+   }
+ 
+ function vistaPrevia(opcion){
+     
+    var $codigo={
+        '_codigo': opcion }
+     
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModPresupuesto/Controlador_ValidarPresupuesto.php',
+        type: 'POST',
+        data: $codigo,
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+        },
+        success: function(datos){
+ 
+            if(datos.response=="0"){
+                console.log('ERROR: '+datos.message);
+                alert("No existe el código");
+            }else{
+
+                switch(datos[0].EMPCODIGO){
+                      case 'CT': imagen="<img src='Modulos/ModPresupuesto/Logo-Computextos.png' width='220' height='65'>";break;
+                      case 'ER': imagen="<img src='Modulos/ModPresupuesto/Logo-EdicionesReales.png' width='220' height='65'>";break;
+                      case 'ED': imagen="<img src='Modulos/ModPresupuesto/Logo-EditorialEImprentaDesa.png' width='220' height='65'>";break;
+                      case 'GR': imagen="<img src='Modulos/ModPresupuesto/Logo-GraficaReal.png' width='220' height='65'>";break;
+                     default : imagen="<img src='Modulos/ModPresupuesto/Logo-Computextos.png' width='220' height='65'>";break;
+                  }
+                  $("#logoEmpresa").html(imagen); 
+                $("#cliente").html(datos[0].CLIENRAZON_SOCIAL);
+                $("#nPresupuesto").html("Presupuesto "+datos[0].PRESUPNUMERO);
+              
+                var fecha = new Date(datos[0].PRESUPFECHA_REGISTRO);  
+                var mes=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+                    
+                $("#fechaRegistroModal").html("Lince, "+ fecha.getDate()  + ' de ' + mes[fecha.getMonth()]+ ' del ' + fecha.getFullYear());
+                
+                var tablaItem="";
+                var preciototal=0;
+                var precio="";
+
+                for(var i=0; i<datos.length; i++){
+                    var item=datos[i].ITPRESUCODIGO;
+                    item = item.substr(8);
+
+                    var impresion;
+                    var colores;
+                      if(datos[i].DETPRESUPNUM_COLOR==4){
+                            colores="FULL COLOR";
+                      }else{
+                            colores=datos[i].DETPRESUPNUM_COLOR+" colores";
+                      }
+
+                      if(datos[i].DETPRESUPTIPO_IMPRESION==1){
+                            impresion="SOLO TIRA";
+                      }else if(datos[i].DETPRESUPTIPO_IMPRESION==2){
+                            impresion="T/R APARTE";
+                      }else  if(datos[i].DETPRESUPTIPO_IMPRESION==3){
+                            impresion="T/R JUNTA";
+                      }
+
+                    var acabados="";
+
+                      if (datos[i].DETPRESUPBARNIZ_PLASTI==0 || datos[i].DETPRESUPBARNIZ_PLASTI==null || datos[i].DETPRESUPBARNIZ_PLASTI.length==0){}else{    acabados+=""+datos[i].DETPRESUPBARNIZ_PLASTI+ " <br />"; }
+
+                      if (datos[i].DETPRESUPBARNIZ_PLASTI1==0 || datos[i].DETPRESUPBARNIZ_PLASTI1==null || datos[i].DETPRESUPBARNIZ_PLASTI1.length==0){}else{    acabados+=""+datos[i].DETPRESUPBARNIZ_PLASTI1+"  <br />"; }
+
+                      if (datos[i].DETPRESUPBARNIZ_PLASTI2==0 || datos[i].DETPRESUPBARNIZ_PLASTI2==null || datos[i].DETPRESUPBARNIZ_PLASTI2.length==0){}else{    acabados+=""+datos[i].DETPRESUPBARNIZ_PLASTI2+" <br />"; }
+
+                      if (datos[i].DETPRESUPCOSTO_COLA_FORRO==0){}else{    acabados+="ENCOLADO Y FORRADO <br />"; } 
+
+                      if (datos[i].DETPRESUPCOSTO_CORTE==0){}else{    acabados+="DEGOLLADO Y CORTE <br />"; } 
+
+                      if (datos[i].DETPRESUPCOSTO_ARMADO==0){}else{    acabados+="ARMADO Y PEGADO DE BOLSILLO <br />"; } 
+
+                      if (datos[i].DETPRESUPCOSTO_OJAL==0){}else{    acabados+="PUESTA DE OJALILLOS <br />"; } 
+
+                      if (datos[i].DETPRESUPCOSTO_NYLON==0){}else{    acabados+="NYLON 0.7mm <br />";}  
+
+
+                 
+                    
+                        tablaItem+="<tr>\
+                                        <td class='font-weight-bold pt-3' colspan='3' style='text-decoration: underline' >"+ item+ ". "+ datos[i].ITPRESUDESCRIPCION+"</td>\
+                                    </tr>\
+                                    <tr>\
+                                        <td>Cantidad</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion'>"+datos[i].DETPRESUPTIRAJE_TOTAL+"</td>\
+                                    </tr>\
+                                    <tr>\                                                 <td>Impresion</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion'>"+colores+" "+ impresion+"</td>\
+                                    </tr>\
+                                    <tr>\                                                 <td>Material</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion'>"+datos[i].DETPRESUPTIP_PAPEL+" "+ datos[i].DETPRESUPGRAMAJE +" GRS."+"</td>\
+                                    </tr>\
+                                    <tr>\                                                 <td>Medidas</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion'>EN REPARACION!!!</td>\
+                                    </tr>\
+                                    <tr>\                                                 <td>Acabados</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion'>"+acabados+"</td>\
+                                    </tr>\
+                                    <tr>\                                                 <td>Valor de Venta</td>\
+                                        <td>:</td>\
+                                        <td class='descripcion red-text font-weight-bold text-left'>"+datos[i].ITPRESUIMPORTE + " + IGV"+"</td>\
+                                    </tr>"
+                var inicial=datos[i].ITPRESUIMPORTE.substr(0,1);
+
+                    if( inicial=='$'){
+                        precio = parseFloat(datos[i].ITPRESUIMPORTE.substr(1)); 
+                    }else if (inicial=='S'){
+                        inicial=datos[i].ITPRESUIMPORTE.substr(0,2);
+                        precio = parseFloat(datos[i].ITPRESUIMPORTE.substr(3));
+                    }    
+            
+                    preciototal=preciototal+ precio;
+                    
+                    
+                }
+                $("#cuerpovista").html(tablaItem);
+                $("#totalVenta").html("Total:"+inicial+preciototal+" + IGV");
+                
+                $("#ejecutiva").html(" "+datos[0].PERSNOMBRE+" "+datos[0].PERSAPELLIDO_PATERNO+" "+datos[0].PERSAPELLIDO_MATERNO+"");
+
+            } 
+        }
+    });  
+   
+
+
+ }
+  
+</script>

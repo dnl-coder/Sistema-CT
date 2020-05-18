@@ -1,0 +1,84 @@
+<div id="encabezado" class="container font-weight-bold h2-responsive principal-text text-center">LISTAR PRESUPUESTOS</div>
+<div id="titulo" class="container font-weight-bold h4-responsive principal-text text-center"></div>
+
+<table id="tablaPresupuestos" class='table table-striped table-bordered text-center' cellspacing='0' width='100%'>
+  <thead><tr id="tituloColumnas"></tr></thead>
+  <tbody id="cuerpoTabla"></tbody>
+</table>
+ 
+<div id="resultado" class="container font-weight-bold h3-responsive principal-text text-center"></div>
+
+<script type="text/javascript" src="Modulos/ModPresupuesto/VistaPresupuesto.js"></script>
+
+<script>
+  $("#encabezado").text("LISTAR PRESUPUESTOS - "+name);
+    
+$("#titulo").text(name);
+    
+cargarDatos(cliente);
+    
+/*=============================================
+    CARGAR DATOS DEL LISTADOXCLIENTE
+=============================================*/       
+    
+function cargarDatos(cliente){
+    var titulos="";
+    var $opcion;
+    
+    titulos+="<th class='th-sm text-center'>PRESUPUESTOS</th>";
+    $("#tituloColumnas").append(titulos);
+    
+    $opcion={'_cliente': cliente};
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModPresupuesto/Controlador_MostrarPresupuestoCliente.php',
+        type: 'POST',
+        data: $opcion, 
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                console.log("Archivos no encontrados");
+            }
+            else{
+                console.log("Error no identificado");
+            }
+        },
+        success: function(datos){
+            if(datos.response=="0"){
+                console.log('ERROR: '+datos.message);
+                $("#resultado").text("NO HAY RESULTADOS PARA LA BUSQUEDA");
+            }else{
+                mostrarDatosPresupuestos(datos);
+            }
+        }
+    }); 
+}
+    
+/*=============================================
+    MOSTRAR DATOS TODOS PRESUPUESTOS X CLIENTE
+=============================================*/  
+
+function mostrarDatosPresupuestos(datos){
+    
+    var tablaPresupuestos="";
+    
+    for(var i=0; i<datos.length;i++){
+        tablaPresupuestos+="<tr><td><a id='"+datos[i].PRESUPNUMERO+"' onclick='seleccionarLink(this.id)'>"+datos[i].PRESUPNUMERO+"</a></td></tr>";
+    }
+    $("#cuerpoTabla").append(tablaPresupuestos);
+    $('#tablaPresupuestos').DataTable();
+    $('.dataTables_length').addClass('bs-select');
+}
+  
+    
+/*=================================================
+    MOSTRAR DATOS SEGUN EL PRESUPUESTO SELECCIONADO
+==================================================*/      
+var presupuesto;
+function seleccionarLink(id){
+    presupuesto=id;
+    BuscarPresupuestos(presupuesto,"SI");
+}   
+          
+    
+</script>

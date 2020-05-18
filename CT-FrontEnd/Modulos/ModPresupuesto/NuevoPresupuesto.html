@@ -1,0 +1,174 @@
+<!--DISEÑO GENERAL DE LA VISTA-->
+<form id="form">
+
+  <!--DATOS GENERALES-->
+  <div class="card">
+    <div class="card-body">
+
+      <div class="row justify-content-center">
+        
+        <!--TITULO DE LA VISTA-->
+        <div class="col-12 col-md-8 text-center">
+          <h3 class="h3-responsive titulo">Nuevo presupuesto</h3>
+        </div>
+        
+        <div class="w-100"></div>
+        
+        <!--INFORMACION GENERAL DEL PRESUPUESTO-->
+        <div class="col-12 col-md-5 form-group">
+         
+          <!--CODIGO-->
+          <h6 class="d-none">Codigo: <span id="codigo">000000</span></h6>
+          
+          <!--CLIENTE-->
+          <label for="cliente" style="margin-top: 1rem;">Seleccionar cliente</label>
+          <select required id="cliente" class="form-control" aria-describedby="clienteHelp"></select>
+          <small id="clienteHelp" class="form-text text-muted">Campo obligatorio.</small>
+          
+        </div>
+        
+        <!--VENDEDOR-->
+        <div class="col-12 col-md-5 form-group">
+          <label for="vendedor" style="margin-top: 1rem;">Seleccionar vendedor</label>
+          <select required id="vendedor" class="form-control" aria-describedby="vendedorHelp">
+            <option value="49">PEPE</option>
+            <option value="35">FABIOLA</option>
+            <option value="39">YRMA</option>
+            <option value="54">MILAGROS</option>
+            <option value="28">LIZ</option>
+            <option value="74">ALAN</option>
+          </select>
+          <small id="vendedorHelp" class="form-text text-muted">Campo obligatorio.</small>
+        </div>
+
+      </div>
+   
+    </div>
+  </div>
+  
+  <!--ITEM-->
+  <div class="card">
+    <h5 id="1" class="card-header h5">ITEM 1
+      <button class="btn btn-titulo" onclick="">NUEVO ITEM</button>
+      <button class="btn btn-titulo" onclick="">ELIMINAR ITEM</button>
+      <button class="btn btn-titulo2" onclick="">PERSONALIZADO</button>
+      <button class="btn btn-titulo2" onclick="">NUEVO ESTILO</button>
+    </h5>
+    <div class="card-body">
+
+      <div class="form-row">
+    
+        <!--CODIGO-->
+        <div class="col-12 col-md-2 form-group">
+          <label for="codigo">Código</label>
+          <input readonly type="text" class="form-control" id="codigo" aria-describedby="codigoHelp">
+          <small id="codigoHelp" class="form-text text-muted">Campo autogenerado.</small>
+        </div>
+
+        <!--CANTIDAD-->
+        <div class="col-12 col-md-2 form-group">
+          <label for="cantidad">Cantidad</label>
+          <input required type="number" class="form-control" id="cantidad" aria-describedby="cantidadHelp">
+          <small id="cantidadHelp" class="form-text text-muted">Campo obligatorio.</small>
+        </div>
+        
+        <!--DESCRIPCION-->
+        <div class="col-12 col-md form-group">
+          <label for="descripcion">Descripcion</label>
+          <textarea required class="form-control" id="descripcion" aria-describedby="descripcionHelp"></textarea>
+          <small id="descripcionHelp" class="form-text text-muted">Recomendación: Usar palabras claves como volantes, afiches,...</small>
+        </div>
+        
+        <!--ESTILO-->
+        <div class="col-12 col-md-12 form-group border p-3">
+          <label for="estilos">Elegir un estilo predeterminado o personalizado</label>
+          <div id="estilos" class="carousel slide mt-3" data-ride="carousel" aria-describedby="estilosHelp">
+            <div class="carousel-inner">
+             
+              <div class="carousel-item active">
+               <div class="row">
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">A6</h1>VOLANTE</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">A5</h1>VOLANTE</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">A4</h1>VOLANTE</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">A3</h1>VOLANTE</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P1</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P2</h1>PERSONALIZADO</div>
+               </div>
+              </div>
+              
+              <div class="carousel-item">
+               <div class="row">
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P3</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P4</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P5</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P6</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P7</h1>PERSONALIZADO</div>
+                  <div class="col-12 col-md mx-1 text-center"><h1 class="formulario mb-0">P8</h1>PERSONALIZADO</div>
+               </div>
+              </div>
+              
+            </div>
+            <a class="carousel-control-prev w-auto principal" href="#estilos" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next w-auto principal" href="#estilos" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+   
+    </div>
+  </div>
+  
+
+  
+  <!--VISTA PREVIA-->
+  <div class="card">
+    <h5 id="1" class="card-header h5">VISTA PREVIA</h5>
+    <div class="card-body">
+      <table class="my-4" id="vistaPrevia" style="width: 80%; margin: auto;">
+        <thead>
+            <tr>
+              <td id="logoEmpresa" rowspan=4 colspan="2"><img src="Modulos/ModPresupuesto/Logo-Computextos.png" width="220" height="65"></td>
+              <td class="text-right" id="cliente">TELEFONICA DEL PERU</td>  
+            </tr>
+            <tr>
+              <td id="nPresupuesto" class="h4-responsive font-weight-bold text-right">Presupuesto 3210-19</td> 
+            </tr>
+            <tr>
+              <td class="text-right" id="fechaRegistroModal">Lince, 13 de Marzo del 2019</td>
+            </tr>
+            <tr>
+              <td class="text-right font-weight-bold" id="totalVenta">Total: S/. 1000 + IGV</td>
+            </tr>
+        </thead>
+        <tbody id="cuerpovista">
+        </tbody>
+        <tfoot>
+          <tr><td >
+            <div class="font-weight-bold" id="ejecutiva" style="font-size: 13px;"></div>
+            <div class="font-weight-bold"style="font-size: 14px;"> GRUPO COMPUTEXTOS S.A.C.</div>
+          </td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  
+  <!--OPCIONES DEL FORMULARIO-->
+  <div id="opcionesFormulario" class="form-inline justify-content-center">
+    <button type="button" id="guardar" class="btn btn-guardar">Guardar</button>
+    <button type="button" id="cambiar" class="btn btn-reset">Cambiar monto</button>
+    <button type="reset" id="reset" class="btn btn-reset">Limpiar</button>
+  </div>
+
+  <!-- MENSAJE -->
+  <div class="toast" data-autohide="true" data-delay="9000"><div class="toast-body"></div></div>  
+  
+</form>
+
+<!--ARCHIVOS JS DE LA VISTA-->
+<script type="text/javascript" src="Modulos/ModPresupuesto/F1810.js"></script>

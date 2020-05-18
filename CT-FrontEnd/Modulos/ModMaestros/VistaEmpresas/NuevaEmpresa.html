@@ -1,0 +1,241 @@
+<!--DISEÑO GENERAL DE LA VISTA-->
+<form>
+
+  <!--DATOS GENERALES-->
+  <div class="card">
+    <div class="card-body">
+
+      <div class="row justify-content-center">
+        
+        <!--TITULO DE LA VISTA-->
+        <div class="col-12 col-md-8 text-center">
+          <h3 class="h3-responsive titulo">REGISTRAR EMPRESA</h3>
+        </div>
+        
+        <div class="w-100"></div>
+        
+        <!--INFORMACION GENERAL DE LA EMPRESA-->
+        <div class="col-12 col-md-5 col-xl-4 form-group text-center">
+         
+          <!--CODIGO-->
+          <h6 class="d-none">Codigo: <span id="codigo">000000</span></h6>
+          
+          <!--F. REGISTRO EN EL SISTEMA-->
+          <h6 class="d-none">Fecha de registro: <span id="fechaRegistro"></span></h6>
+          
+        </div>
+
+      </div>
+   
+    </div>
+  </div>
+  
+  <!--DATOS PERSONALES-->
+  <div class="card">
+    <h5 class="card-header h5">Datos Generales</h5>
+    <div class="card-body">
+
+      <div class="form-row">
+    
+        <!--NOMBRE-->
+        <div class="col-12 col-md-4 form-group">
+          <label for="descripcion">Nombre</label>
+          <input required type="text" class="form-control" id="descripcion" aria-describedby="descripcionHelp" placeholder="Ingresar Nombre">
+          <small id="descripcionHelp" class="form-text text-muted">Ejemplo:COMPUTEXTOS S.A.C.</small>
+        </div>
+        
+        <!--ABREVIATURA-->
+        <div class="col-12 col-md-4 form-group">
+          <label for="abreviatura">Abreviatura</label>
+          <input required type="text" class="form-control" id="abreviatura" aria-describedby="abreviaturaHelp" placeholder="Ingresar Abreviatura">
+          <small id="abreviaturaHelp" class="form-text text-muted">Ejemplo:CT</small>
+        </div>
+        
+        <!--RUC-->
+        <div class="col-12 col-md-4 form-group">
+          <label for="ruc">Ruc</label>
+          <input required type="number" class="form-control" id="ruc" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="9" aria-describedby="rucHelp" placeholder="Ingresar Ruc">
+          <small id="rucHelp" class="form-text text-muted">Ejemplo:10084130</small>
+        </div>
+        
+        <div class="w-100"></div>
+        
+        <!--DOMICILIO-->
+        <div class="col-12 col-md-6 form-group">
+          <label for="domicilio">Domicilio</label>
+          <input required type="text" class="form-control" id="domicilio" aria-describedby="domicilioHelp" placeholder="Ingresar Domicilio">
+          <small id="domicilioHelp" class="form-text text-muted">Ejemplo:Av. Arequipa 1583 Lince</small>
+        </div>
+        
+        <!--ESTADO-->
+        <div class="col-12 col-md-6 form-group">
+          <label for="estado">Estado</label>
+          <select required id="estado" class="form-control" aria-describedby="estadoHelp"></select>
+          <small id="estadoHelp" class="form-text text-muted">Campo obligatorio.</small>
+        </div>
+        
+        <div class="w-100"></div>
+        
+        <!--FAX-->
+        <div class="col-12 col-md-6 form-group">
+          <label for="fax">Fax</label>
+          <input type="number" class="form-control" id="fax" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="9" aria-describedby="faxHelp" placeholder="Ingresar Fax">
+          <small id="faxHelp" class="form-text text-muted">Ejemplo:10084130</small>
+        </div>
+        
+        <!--IDENTIFICACION-->
+        <div class="col-12 col-md-6 form-group">
+          <label for="telefonos">Telefonos</label>
+          <div class="form-inline">
+            <input required type="number" class="form-control w-50" id="telefono1" aria-describedby="numIdentificacionHelp" placeholder="Ingresar numero de identificacion" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11">
+            <input type="number" class="form-control w-50" id="telefono2" aria-describedby="numIdentificacionHelp" placeholder="Ingresar numero de identificacion" min="0" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11">
+          </div>
+          <small id="telefonosHelp" class="form-text text-muted">Recomendacion: Ingresar numeros telefonicos.</small>
+        </div>
+
+
+      </div>
+   
+    </div>
+  </div>
+
+  <!--OPCIONES DEL FORMULARIO-->
+  <div id="opcionesFormulario" class="form-inline justify-content-center">
+    <button type="button" onclick="validar()" class="btn btn-guardar">Registrar</button>
+  </div>
+  
+  <!-- MENSAJE -->
+<div class="toast" data-autohide="true" data-delay="9000"><div class="toast-body"></div></div>
+  
+</form>
+
+<!--ARCHIVOS JS DE LA VISTA-->
+<script type="text/javascript" src="Modulos/ModMaestros/VistaPersonal/VistaPersonal.js"></script>
+<script>
+    
+mostrarEstado();
+    
+//--GENERAR OPCIONES DE ESTADO--
+function mostrarEstado(){
+    var boxEstado="";
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Empresa/Controlador_MostrarEstado.php',
+        type: 'GET',
+        dataType: 'json',
+        error: function(error){
+            if(error.status == 401){
+                mostrarMensaje("error","ERROR AL CARGAR LOS DATOS! Archivos no encontrados");
+            }
+            else{
+                mostrarMensaje("error","ERROR AL CARGAR LOS DATOS! Error no identificado");
+            }
+            boxEstado+="<option value='' selected>Elegir Estado</option>";
+            $("#estado").html(boxEstado);
+        },
+        success: function(datos){
+
+            if(datos.response=="0"){
+                boxEstado+="<option value='' selected>Elegir Estado</option>";
+                $("#estado").html(boxEstado);
+            }else{
+                for(var i=0; i<datos.length;i++){
+                    if(i==0){
+                        boxEstado+="<option value='' selected>Elegir Estado</option>";
+                    }
+                    boxEstado+="<option value='"+datos[i].ESTCODIGO+"'>"+datos[i].ESTDESCRIPCION+"</option>";
+                }
+                $("#estado").html(boxEstado);
+            }
+        }
+    });  
+} 
+    
+/*=============================================
+    VALIDAR FORMULARIO
+=============================================*/
+    
+function validar(){
+
+    var R1  = $("#descripcion").val();
+    var R2  = $("#ruc").val();
+    var R3  = $("#abreviatura").val();
+    var R4  = $("#domicilio").val();
+    var R5  = $("#estado").val();
+    var R6  = $("#telefono1").val();
+    
+    if(R1 == null || R1.length == 0 || /^\s+$/.test(R1)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#descripcion").focus();
+    }
+    else if(R2 == null || R2.length == 0 || /^\s+$/.test(R2)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#ruc").focus();
+    }
+    else if(R3 == null || R3.length == 0 || /^\s+$/.test(R3)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#abreviatura").focus();
+    }
+    else if(R4 == null || R4.length == 0 || /^\s+$/.test(R4)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#domicilio").focus();
+    }
+    else if(R5 == null || R5.length == 0 || /^\s+$/.test(R5)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#estado").focus();
+    }
+    else if(R6 == null || R6.length == 0 || /^\s+$/.test(R6)){
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+        $("#telefono1").focus();
+    }
+    else{
+        mostrarMensaje("exito","EXITO: Validación de datos correcta...");
+    }
+        
+} 
+    
+function RegistrarEmpresa(){    
+    var $empresa={
+
+    '_descripcion':$("#descripcion").val(),
+    '_ruc':$("#ruc").val(),
+    '_abreviatura':$("#abreviatura").val(),
+    '_domicilio':$("#domicilio").val(),
+    '_estado':$("#estado").val(),
+    '_fax':$("#fax").val(),
+    '_telf1':$("#telefono1").val(),
+    '_telf2':$("#telefono2").val()
+        
+    }
+    
+    $.ajax({
+        url: '../CT-BackEnd/Controlador/ModMaestros/Controlador_Empresa/Controlador_RegistrarEmpresa.php',
+        type: 'POST',
+        data: $empresa,
+        dataType: 'json',
+        error: function(error){
+            
+            if(error.status == 401){
+                mostrarMensaje("error","ERROR AL GUARDAR LOS DATOS! No se pudo establecer conexion con el servidor");
+            }
+            else{
+                mostrarMensaje("error","ERROR AL CARGAR LOS DATOS! Error no identificado");
+            }  
+            
+        },
+        success: function(datos){
+
+            if(datos.response == 0){
+                mostrarMensaje("error",'ERROR: '+datos.message);
+            }
+            else{
+                $("#resultado").text("Resultados grabados satisfactoriamente");
+            }
+        }
+        
+    });
+    
+}    
+
+
+</script>
